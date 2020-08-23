@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE suite SYSTEM "http://testng.org/testng-1.0.dtd">
+<suite name="Hybird App Test Suite">
+    <listeners>
+        <listener class-name="org.uncommons.reportng.HTMLReporter"/>
+        <listener class-name="org.uncommons.reportng.JUnitXMLReporter"/>
+        <listener class-name="com.automation.e2e.AroundLoggerListener"/>
+        <listener class-name="com.automation.e2e.ExtentReportListener"/>
+    </listeners>
+
+    <parameter name="appiumRemoteURL" value="http://127.0.0.1:4723/wd/hub"/>
+
+    <!-- Modify parameters according to your needs -->
+    <parameter name="deviceName" value="Android"/>
+    <parameter name="platformName" value="Android"/>
+    <parameter name="platformVersion" value="10.0"/>
+    <parameter name="automationName" value="UIAutomator2"/>
+
+    <!-- App name, not path, put your apk file under “resources/apks” folder. -->
+    <parameter name="appName" value=""/>
+    <!--
+        Android Only
+        If there is "appName", will ignore the "appPackage" and "appActivity",
+          otherwise, will use "appPackage" and "appActivity"
+    -->
+    <parameter name="appPackage" value="com.android.chrome"/>
+    <parameter name="appActivity" value="com.google.android.apps.chrome.Main"/>
+
+    <test verbose="2" preserve-order="true" name="E:/6CodeRepository/AutomationTools/E2EAT/src/main/resources">
+        <classes>
+            <class name="com.chi.automationtest.InitialTestSuite"/>
+            <class name="com.chi.automationtest.Androidhybird.HybirdAppTest">
+                <methods>
+                    <parameter name="searchKey" value="Appium"/>
+                    <include name="baiduSearchTest"/>
+                </methods>
+            </class>
+        </classes>
+    </test>
+</suite>

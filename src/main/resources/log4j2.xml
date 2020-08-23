@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Status:  TRACE < DEBUG < INFO < WARN < ERROR < FATAL
+    Log level defined in <logger> will override this configuration.
+    monitorInterval: Read the configuration file every 300 s.
+-->
+<Configuration status="WARN" monitorInterval="300">
+    <properties>
+        <property name="LOG_HOME">./logs</property>
+        <property name="FILE_NAME">E2EATLog</property>
+    </properties>
+    <Appenders>
+        <Console name="Console" target="SYSTEM_OUT">
+            <PatternLayout pattern="%d{HH:mm:ss.SSS} [%t] %-5level %logger{36} - %msg%n"/>
+        </Console>
+        <RollingFile name="RollingFileCommonMSG"
+                     fileName="${LOG_HOME}/${FILE_NAME}.log"
+                     filePattern="${LOG_HOME}/$${date:yyyy-MM}/${FILE_NAME}-%d{yyyy-MM-dd HH-mm}-%i.log">
+            <PatternLayout
+                    pattern="%d{yyyy-MM-dd HH:mm:ss.SSS} [%t] %-5level %logger{36} - %msg%n"/>
+            <Policies>
+                <TimeBasedTriggeringPolicy interval="6"/>
+                <SizeBasedTriggeringPolicy size="10 MB"/>
+            </Policies>
+            <DefaultRolloverStrategy max="20"/>
+        </RollingFile>
+    </Appenders>
+
+    <Loggers>
+        <Logger name="com.automation" level="DEBUG" additivity="false" includeLocation="true">
+            <AppenderRef ref="RollingFileCommonMSG"/>
+            <AppenderRef ref="Console"/>
+        </Logger>
+        <Logger name="org.testng" level="DEBUG" additivity="false" includeLocation="true">
+            <AppenderRef ref="RollingFileCommonMSG"/>
+            <AppenderRef ref="Console"/>
+        </Logger>
+        <Logger name="com.github.appium" level="DEBUG" additivity="false" includeLocation="true">
+            <AppenderRef ref="RollingFileCommonMSG"/>
+            <AppenderRef ref="Console"/>
+        </Logger>
+        <Root level="DEBUG">
+            <AppenderRef ref="Console"/>
+        </Root>
+    </Loggers>
+</Configuration>
