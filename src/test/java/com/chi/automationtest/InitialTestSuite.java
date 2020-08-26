@@ -1,11 +1,11 @@
 package com.chi.automationtest;
 
-import lombok.extern.slf4j.Slf4j;
-import org.testng.annotations.Test;
 import io.appium.java_client.android.AndroidDriver;
+import lombok.extern.slf4j.Slf4j;
 import org.openqa.selenium.remote.DesiredCapabilities;
 import org.testng.annotations.*;
 
+import java.io.File;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ResourceBundle;
@@ -22,12 +22,21 @@ public class InitialTestSuite {
     ResourceBundle resourceBundle = ResourceBundle.getBundle("config");
 
     @BeforeSuite
-    @Parameters({"appiumRemoteURL", "deviceName", "platformName", "platformVersion", "automationName", "appName", "appPackage", "appActivity"})
+    @Parameters({"appiumRemoteURL",
+            "chromedriverExecutableDir",
+            "deviceName",
+            "platformName",
+            "platformVersion",
+            "automationName",
+            "appName",
+            "appPackage",
+            "appActivity"})
     public void initialDriver(@Optional("http://127.0.0.1:4723/wd/hub") String appiumRemoteURL,
+                              @Optional("chromedrivers") String chromedriverExecutableDir,
                               String deviceName,
-                              @Optional("Android") String platformName,
+                              String platformName,
                               String platformVersion,
-                              @Optional("UIAutomator2") String automationName,
+                              String automationName,
                               String appName,
                               String appPackage,
                               String appActivity) throws MalformedURLException {
@@ -35,7 +44,7 @@ public class InitialTestSuite {
         DesiredCapabilities desiredCapabilities = null;
 
         if (platformName.equalsIgnoreCase("Android")) {
-            desiredCapabilities = initialAndroidDriver(deviceName, platformName, platformVersion, automationName, appName, appPackage, appActivity);
+            desiredCapabilities = initialAndroidDriver(deviceName, chromedriverExecutableDir, platformName, platformVersion, automationName, appName, appPackage, appActivity);
         } else if (platformName.equalsIgnoreCase("iOS")) {
             desiredCapabilities = initialIOSDriver(deviceName, platformName, platformVersion, automationName, appName);
         } else {
@@ -51,6 +60,7 @@ public class InitialTestSuite {
     }
 
     private DesiredCapabilities initialAndroidDriver(String deviceName,
+                                                     String chromedriverExecutableDir,
                                                      @Optional("Android") String platformName,
                                                      String platformVersion,
                                                      @Optional("UIAutomator2") String automationName,
@@ -58,8 +68,25 @@ public class InitialTestSuite {
                                                      String appPackage,
                                                      String appActivity) throws MalformedURLException {
 
+        String rootPath = System.getProperty("user.dir");
+
         DesiredCapabilities desiredCapabilities = new DesiredCapabilities();
         desiredCapabilities.setCapability("deviceName", deviceName);
+
+        String chromedriverPath = rootPath + "\\target\\classes\\" + chromedriverExecutableDir;
+        File directory = new File(rootPath);
+        if (directory.isDirectory()) {
+            if (directory.list().length <= 0) {
+                log.error("No chromedriver executable file found in: " + chromedriverPath);
+                throw new IllegalArgumentException("No chromedriver executable file found in: " + chromedriverPath);
+            }
+        } else {
+            log.error("You need to create following folder: " + chromedriverExecutableDir);
+            throw new IllegalArgumentException("You need to create following folder: " + chromedriverExecutableDir);
+        }
+
+        desiredCapabilities.setCapability("chromedriverExecutableDir", chromedriverPath);
+
         desiredCapabilities.setCapability("platformName", platformName);
         desiredCapabilities.setCapability("platformVersion", platformVersion);
         desiredCapabilities.setCapability("automationName", automationName);
@@ -75,9 +102,9 @@ public class InitialTestSuite {
     }
 
     private DesiredCapabilities initialIOSDriver(String deviceName,
-                                                 @Optional("Android") String platformName,
+                                                 @Optional("iOS") String platformName,
                                                  String platformVersion,
-                                                 @Optional("UIAutomator2") String automationName,
+                                                 @Optional("XCUITest") String automationName,
                                                  String appName) throws MalformedURLException {
 
         DesiredCapabilities desiredCapabilities = new DesiredCapabilities();

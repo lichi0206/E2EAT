@@ -25,6 +25,8 @@
     -->
     <parameter name="appPackage" value="com.android.chrome"/>
     <parameter name="appActivity" value="com.google.android.apps.chrome.Main"/>
+    <!-- Place chromedrivers under .\chromedrivers folder -->
+    <parameter name="chromedriverExecutableDir" value="chromedrivers"></parameter>
 
     <test verbose="2" preserve-order="true" name="E:/6CodeRepository/AutomationTools/E2EAT/src/main/resources">
         <classes>
